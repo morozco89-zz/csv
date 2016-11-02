@@ -7,6 +7,6 @@ namespace morozco\csv\Exceptions;
  *
  * @author morozco
  */
-class InvalidHandleException extends Exception {
+class InvalidHandleException extends \Exception {
     protected $message = 'Invalid file handle' . PHP_EOL;
 }

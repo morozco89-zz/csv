@@ -13,6 +13,6 @@ namespace morozco\csv\Exceptions;
  *
  * @author morozco
  */
-class CantUseBinarySearchException {
+class CantUseBinarySearchException extends \Exception {
     protected $message = 'Can\'t use binary search' . PHP_EOL;
 }
