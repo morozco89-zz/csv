@@ -1,0 +1,21 @@
+{
+    "name": "morozco/csv",
+    "description": "CSV utils",
+    "type": "library",
+    "license": "apache 2.0",
+    "authors": [
+        {
+            "name": "Miguel Andrés Cortés Orozco",
+            "email": "miguel.cortes@decameron.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "morozco\\csv\\": ""
+        }
+    }
+}
