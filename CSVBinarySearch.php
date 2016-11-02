@@ -120,14 +120,14 @@ class CSVBinarySearch {
                 return $line;
             } else if ($keyFound > $this->key) {
                 if($this->debug){
-                    echo 'La fecha encontrada (' . $keyFound .') es MAYOR' . PHP_EOL;
+                    echo 'Llave encontrada (' . $keyFound .') es MAYOR' . PHP_EOL;
                 }
                 
                 $expectedKeyValue = self::LESS;
                 $fin = ftell($this->handle);
             } else {
                 if($this->debug){
-                    echo 'La fecha encontrada (' . $keyFound .') es MENOR' . PHP_EOL;
+                    echo 'Llave encontrada (' . $keyFound .') es MENOR' . PHP_EOL;
                 }
                 
                 $expectedKeyValue = self::MORE;
