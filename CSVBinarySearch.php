@@ -41,6 +41,10 @@ class CSVBinarySearch {
         $this->debug = $debug;
     }
     
+    public function __destruct(){
+        fclose($this->handle);
+    }
+    
     public function setKey($key){
         $this->key = $key;
     }
@@ -66,10 +70,14 @@ class CSVBinarySearch {
     
         while ($this->breakLine !== ($char = fgetc($this->handle))) {
             if(ftell($this->handle) - 2 > 0){
-                fseek($this->handle, -2, SEEK_CUR);
+                $success = fseek($this->handle, -2, SEEK_CUR);
             } else {
-                fseek($this->handle, 0, SEEK_SET);
+                $success = fseek($this->handle, 0, SEEK_SET);
                 break;
+            }
+            
+            if($success === -1){
+                return null;
             }
         }
 
@@ -77,6 +85,19 @@ class CSVBinarySearch {
         fseek($this->handle, $current, SEEK_SET);
 
         return $line;
+    }
+    
+    public function getDataFromNextLine(){
+        $offset = ftell($this->handle);
+        while($this->breakLine !== ($char = fgetc($this->handle))) {
+            $success = fseek($this->handle, $offset++);
+            
+            if($success === -1){
+                return null;
+            }
+        }
+        
+        return fread($this->handle, $this->fileStats['size']);
     }
     
     public function search(){
@@ -119,8 +140,79 @@ class CSVBinarySearch {
             $lastKey = $keyFound;
 
             if ($keyFound == $this->key) {
-                fclose($this->handle);
                 return $line;
+            } else if ($keyFound > $this->key) {
+                if($this->debug){
+                    echo 'Llave encontrada (' . $keyFound .') es MAYOR' . PHP_EOL;
+                }
+                
+                $expectedKeyValue = self::LESS;
+                $fin = ftell($this->handle);
+            } else {
+                if($this->debug){
+                    echo 'Llave encontrada (' . $keyFound .') es MENOR' . PHP_EOL;
+                }
+                
+                $expectedKeyValue = self::MORE;
+                $inicio = ftell($this->handle);
+            }
+
+            if($this->debug){
+                echo '___________________________________' . PHP_EOL;
+                sleep($this->sleepTime);
+            }
+        }
+        
+        fclose($this->handle);
+        return null;
+    }
+    
+    /**
+     * 
+     * @return type
+     * @throws CantUseBinarySearchException
+     */
+    public function searchLastData(){
+        
+        $inicio = 0;
+        $fin = $this->fileStats['size'];
+        $stopCondition = -1;
+        $iterations = 0;
+        $lastKey = null;
+        
+        if($this->debug){
+            echo 'Iniciando busqueda de: ' . $this->key . PHP_EOL;
+        }
+        
+        while ($stopCondition != 0) {
+            $iterations++;
+            $stopCondition = floor(($fin - $inicio) / 2);
+
+            fseek($this->handle, $inicio + floor(($fin - $inicio) / 2), SEEK_SET);
+
+            if($this->debug){
+                echo 'Iteracion: ' . $iterations . PHP_EOL;
+                echo 'Inicio: ' . $inicio . PHP_EOL;
+                echo 'Fin: ' . $fin . PHP_EOL;
+                echo 'Moviendo puntero a: ' . ($inicio + $stopCondition) . PHP_EOL;
+            }
+
+            $line = $this->getLine();
+            
+            $keyFound = $line[$this->keyIndex];
+            
+            if(!is_null($lastKey) && $expectedKeyValue === self::LESS  && $keyFound > $lastKey){
+                throw new CantUseBinarySearchException();
+            }
+            
+            if(!is_null($lastKey) && $expectedKeyValue === self::MORE  && $keyFound < $lastKey){
+                throw new CantUseBinarySearchException();
+            }
+            
+            $lastKey = $keyFound;
+
+            if ($keyFound == $this->key) {
+                return $this->getDataFromNextLine();
             } else if ($keyFound > $this->key) {
                 if($this->debug){
                     echo 'Llave encontrada (' . $keyFound .') es MAYOR' . PHP_EOL;
