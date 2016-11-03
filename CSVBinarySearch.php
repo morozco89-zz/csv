@@ -42,7 +42,7 @@ class CSVBinarySearch {
     }
     
     public function __destruct(){
-        fclose($this->handle);
+        @fclose($this->handle);
     }
     
     public function setKey($key){
@@ -163,7 +163,6 @@ class CSVBinarySearch {
             }
         }
         
-        fclose($this->handle);
         return null;
     }
     
@@ -235,7 +234,6 @@ class CSVBinarySearch {
             }
         }
         
-        fclose($this->handle);
         return null;
     }
 }
