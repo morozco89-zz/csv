@@ -61,10 +61,6 @@ class CSVBinarySearch {
         $this->breakLine = $bl;
     }
     
-    public function setSleeptime($st){
-        $this->sleepTime = $st;
-    }
-    
     public function getLine(){
         $current = ftell($this->handle);
     
