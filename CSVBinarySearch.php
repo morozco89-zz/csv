@@ -14,7 +14,6 @@ class CSVBinarySearch {
     protected $key;
     protected $columnSeparator = ',';
     protected $keyIndex;
-    protected $filePath = '';
     protected $breakLine = "\n";
     protected $fileStats = array();
     protected $handle;
@@ -56,6 +55,14 @@ class CSVBinarySearch {
     
     public function setDebug($debug){
         $this->debug = $debug;
+    }
+    
+    public function setBreakline($bl){
+        $this->breakLine = $bl;
+    }
+    
+    public function setSleeptime($st){
+        $this->sleepTime = $st;
     }
     
     public function getLine(){
@@ -136,7 +143,7 @@ class CSVBinarySearch {
 
             if($this->debug){
                 echo '___________________________________' . PHP_EOL;
-                sleep(1);
+                sleep($this->sleepTime);
             }
         }
         
