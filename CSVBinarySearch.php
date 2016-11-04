@@ -87,7 +87,7 @@ class CSVBinarySearch {
         return $line;
     }
     
-    public function getDataFromNextLine(){
+    public function getDataFromNextLine($limit = 0){
         $offset = ftell($this->handle);
         while($this->breakLine !== ($char = fgetc($this->handle))) {
             $success = fseek($this->handle, $offset++);
@@ -97,7 +97,11 @@ class CSVBinarySearch {
             }
         }
         
-        return fread($this->handle, $this->fileStats['size']);
+        if($limit === 0){
+            return fread($this->handle, $this->fileStats['size']);
+        } else {
+            return fread($this->handle, $limit);
+        }
     }
     
     public function search(){
@@ -171,7 +175,7 @@ class CSVBinarySearch {
      * @return type
      * @throws CantUseBinarySearchException
      */
-    public function searchLastData(){
+    public function searchLastData($limit = 0){
         
         $inicio = 0;
         $fin = $this->fileStats['size'];
@@ -211,7 +215,7 @@ class CSVBinarySearch {
             $lastKey = $keyFound;
 
             if ($keyFound == $this->key) {
-                return $this->getDataFromNextLine();
+                return $this->getDataFromNextLine($limit);
             } else if ($keyFound > $this->key) {
                 if($this->debug){
                     echo 'Llave encontrada (' . $keyFound .') es MAYOR' . PHP_EOL;
